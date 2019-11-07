@@ -1,5 +1,5 @@
 from abc import ABC, abstractmethod
-
+from typing import BinaryIO
 
 class Artifacts(ABC):
 
@@ -85,9 +85,9 @@ class Artifacts(ABC):
         pass
 
     @abstractmethod
-    def get_contents(self):
+    def download(self, file: BinaryIO):
         pass
 
     @abstractmethod
-    def set_contents(self,item):
+    def upload(self, file: BinaryIO):
         pass
