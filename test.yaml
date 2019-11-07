@@ -1,0 +1,73 @@
+AWSTemplateFormatVersion: 2010-09-09
+Resources:
+  SNSTestCloud:
+    Type: AWS::SNS::Topic
+    Properties: 
+      DisplayName: SNSTestCloud
+      TopicName: Stephentestsnstopic
+
+  SNSTestCloudSub:
+    Type: AWS::SNS::Subscription
+    DependsOn:
+      - SNSTestCloud
+    Properties: 
+      Endpoint: stephenwebb97@gmail.com
+      Protocol: email
+      TopicArn: !Ref 'SNSTestCloud'
+
+  SNSPolicy:
+    Type: AWS::SNS::TopicPolicy
+    Properties: 
+      PolicyDocument: 
+        Id: StephenSNSTopicPolicy
+        Version: '2012-10-17'
+        Statement:
+        - Sid: StephenSNSTopicPolicySid
+          Effect: Allow
+          Principal:
+            AWS: '*'
+          Action: 
+            - 'sns:Publish'
+            - 'sns:Subscribe'
+            - 'sns:DeleteTopic'
+          Resource: "*"
+      Topics: 
+        - !Ref SNSTestCloud
+
+
+  BucketPolicy:
+    Type: AWS::S3::BucketPolicy
+    Properties:
+      PolicyDocument:
+        Id: MyPolicy
+        Version: 2012-10-17
+        Statement:
+          - Sid: ReadWriteDelete
+            Effect: Allow
+            Principal: 
+              AWS: '485183173290'
+            Action: 
+              - 's3:GetObject'
+              - 's3:PutObject'
+              - 's3:DeleteObject'
+            Resource: !Join 
+              - ''
+              - - 'arn:aws:s3:::'
+                - !Ref S3BucketTest
+                - /*
+      Bucket: !Ref S3BucketTest
+
+
+
+  S3BucketTest:
+    Type: 'AWS::S3::Bucket'
+    DependsOn: 
+      - SNSPolicy
+    Properties:
+      BucketName: stephens3bucketteststephen
+      NotificationConfiguration:
+        TopicConfigurations:
+          - Event: 's3:ObjectCreated:*'
+            Topic: !Ref SNSTestCloud
+          - Event: 's3:ObjectRemoved:*'
+            Topic: !Ref SNSTestCloud
