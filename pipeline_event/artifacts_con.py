@@ -9,6 +9,7 @@ from boto3.session import Session
 
 from boto3_type_annotations import s3
 
+
 class Artifacts(ArtifactsInt):
 
     def __init__(self, artifact: dict, cred: dict = {}, encrypt: dict = {}):
@@ -22,7 +23,7 @@ class Artifacts(ArtifactsInt):
         self.file_name: str = ""
         self.encrypt_type: str = ""
         self.encrypt_id: str = ""
-        self.s3_client: s3.Client =  None
+        self.s3_client: s3.Client = None
         self.__convert(artifact, cred, encrypt)
 
     def get_name(self):
@@ -101,13 +102,28 @@ class Artifacts(ArtifactsInt):
             self.__set_s3_client(session.client('s3', config=botocore.client.Config(signature_version='s3v4')))
         return self.__get_s3_client()
 
-    def upload(self, file: BinaryIO):
+    def upload(self, file: BinaryIO, filename=""):
+        if filename == "":
+            filename = self.get_file_name()
         s3_client = self.__create_s3_client()
-        s3_client.upload_fileobj(file, self.get_bucket_name())
+        s3_client.upload_fileobj(file, self.get_bucket_name(), filename)
 
-    def download(self, file: BinaryIO):
+    def download(self, file: BinaryIO, filename=""):
+        if filename == "":
+            filename = self.get_file_name()
         s3_client = self.__create_s3_client()
-        s3_client.download_fileobj()
+        s3_client.download_fileobj(file, self.get_bucket_name(), filename)
+
+    # Copy From an artifact to self
+    def copy_from(self, artifact: 'Artifacts', filename=""):
+        with open('temp', 'wb') as data:
+            artifact.download(data, filename=filename)
+            self.upload(data, filename=filename)
+
+    def copy_to(self, artifact: 'Artifacts', filename=""):
+        with open('temp', 'wb') as data:
+            self.download(data, filename=filename)
+            artifact.upload(data, filename=filename)
 
     def __convert(self, artifact: dict, cred: dict = {}, encrypt: dict = {}):
         for name, item in artifact.items():

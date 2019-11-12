@@ -1,8 +1,8 @@
 from abc import ABC, abstractmethod
 from typing import BinaryIO
 
-class Artifacts(ABC):
 
+class Artifacts(ABC):
 
     @abstractmethod
     def get_name(self):
@@ -85,9 +85,19 @@ class Artifacts(ABC):
         pass
 
     @abstractmethod
-    def download(self, file: BinaryIO):
+    def download(self, file: BinaryIO, filename=""):
         pass
 
     @abstractmethod
-    def upload(self, file: BinaryIO):
+    def upload(self, file: BinaryIO, filename=""):
         pass
+
+    @abstractmethod
+    def copy_from(self, artifact: 'Artifacts', filename=""):
+        pass
+
+    @abstractmethod
+    def copy_to(self, artifact: 'Artifacts', filename=""):
+        pass
+
+

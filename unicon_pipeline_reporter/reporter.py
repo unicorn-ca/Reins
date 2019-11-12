@@ -19,7 +19,7 @@ class Reporter:
         pass
 
     def pass_bucket(self, in_artifact: Artifacts, out_artifact: Artifacts):
-        pass
+        in_artifact.copy_to(out_artifact)
 
     def accept(self):
         self.cp.put_job_success_result(jobId=self.event.get_id())
