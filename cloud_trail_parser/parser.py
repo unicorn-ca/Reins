@@ -1,6 +1,7 @@
-from cloud_trail_parser.event import Event
+from unicon_classes.cloud_trail.event import Event
 from typing import  List
 from datetime import datetime, timedelta
+import time
 import boto3
 from boto3_type_annotations.cloudtrail import Client
 
@@ -10,7 +11,7 @@ class LookupAttribute:
         self.key = key
         self.value = value
 
-    def to_dict(self, prefix:str = "Attribute", postfix:str = ""):
+    def to_dict(self, prefix: str = "Attribute", postfix: str = ""):
         return {
             prefix + "Key" + postfix : self.key,
             prefix + "Value" + postfix : self.value
@@ -22,7 +23,7 @@ class Parser:
     def __init__(self):
         self.cloud_trail: Client = boto3.client('cloudtrail')
 
-    def fetch(self, lookup_attributes: List[LookupAttribute] = None, start_time:datetime = None,
+    def fetch(self, lookup_attributes: List[LookupAttribute] = None, start_time: datetime = None,
               end_time: datetime = None) -> List[Event]:
         if lookup_attributes is None: lookup_attributes = []
         if start_time is None: start_time = datetime.now() + timedelta(-30)
@@ -54,6 +55,7 @@ class Parser:
                 if name == 'NextToken':
                     next_token_flag = True
                     next_token = item
+                    time.sleep(1)
                 elif name == "Events":
                     for event in item:
                         events.append(Event(event=event, json_decode_cloud_trail_event=True))
