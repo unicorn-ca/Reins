@@ -4,7 +4,7 @@ from unicon_classes.IAM import IAMUser, IAMBasic, IAMGroup
 class IAMFactory:
 
     @staticmethod
-    def create(self, user: dict) -> IAMBasic:
+    def create( user: dict) -> IAMBasic:
         iam: IAMBasic = IAMBasic()
         if user['type'] == "IAMUser":
             iam: IAMUser = IAMUser()

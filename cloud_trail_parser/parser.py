@@ -1,5 +1,5 @@
-from unicon_classes.cloud_trail.event import Event
-from typing import  List
+from unicon_classes.cloud_trail import EventFactory,Event
+from typing import List
 from datetime import datetime, timedelta
 import time
 import boto3
@@ -58,6 +58,6 @@ class Parser:
                     time.sleep(1)
                 elif name == "Events":
                     for event in item:
-                        events.append(Event(event=event, json_decode_cloud_trail_event=True))
+                        events.append(EventFactory.create(event))
 
         return events

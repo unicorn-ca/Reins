@@ -17,6 +17,7 @@ class EventResources:
 
 class Event:
     def __init__(self, event: dict, json_decode_cloud_trail_event: bool = False):
+        self.event_type = ""
         self.event_ID = ""
         self.event_name = ""
         self.read_only = ""
