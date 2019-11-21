@@ -48,24 +48,17 @@ if args.codecommitlog or args.all:
 # ----- CodeCommitLog ----- #
 
 if args.usergrouptest or args.all:
-    user = User("arn:aws:iam::485183173290:user/Stephen")
-
-
-    events = Log.get_events()
     print("----------- Testing User Groups -----------")
-    print("~~~~~~ Fetching Events ~~~~~~")
-    for event in events:
-        branch = ""
-        if len(event.branches) > 0:
-            branch = event.branches[0].branch
-        print(event.event_time, event.event_name, event.event_type, event.repo_name, branch)
-    print("~~~~~~ Fetching Last Events ~~~~~~")
-    event = Log.get_last_confirmed_commit("stephen-test-pipeline", "master")
-    branch = ""
-    if len(event.branches) > 0:
-        branch = event.branches[0].branch
-    if event.identity is not None and isinstance(event.identity, User):
-        event.identity.re_sync()
-        print(event.identity.name, event.identity.accountID, event.identity.createDate,event.identity.passwordLastUsed)
-    print(event.event_time, event.event_name, event.event_type, event.repo_name, branch, event.user_agent)
-    print("----------- Finished  -----------")
+    user = User("Stephen")
+    group = Group.create("StephenTestingGroup")
+    if group.in_group(user):
+        print("User Not In Group Test : Failed")
+    else:
+        print("User Not In Group Test : Passed")
+    group.add_to_group(user)
+    if group.in_group(user):
+        print("User In Group Test : Passed")
+    else:
+        print("User In Group Test : Failed")
+    group.delete()
+    print("----------- Finished User Groups  -----------")
