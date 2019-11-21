@@ -1,12 +1,13 @@
-from unicon_classes.cloud_trail import EventDecode
+from unicon_classes.cloud_trail.event_decode import BasicDecode as EventDecode
 from typing import List
 
 
 class CodeCommitRequestParameter:
-    def __init__(self, params:dict):
+    def __init__(self, params: dict):
         self.branch = ""
         self.commit = ""
         self.branch_path = ""
+        self.__decode(params= params)
 
     def __decode(self, params:dict):
         for name, item in params.items():
@@ -31,7 +32,7 @@ class CodeCommit(EventDecode):
 
     def __code_commit_decode(self, event:dict):
         if self.request_parameters:
-            for name, item in self.request_parameters:
+            for name, item in self.request_parameters.items():
                 if name == "references":
                     for param in item:
                         self.branches.append(CodeCommitRequestParameter(param))

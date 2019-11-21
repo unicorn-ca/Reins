@@ -40,7 +40,7 @@ class Event:
             if name == 'Username': self.username = item
             if name == 'CloudTrailEvent':
                 if json_decode_cloud_trail_event:
-                    self.cloud_trail_event = json.load(item)
+                    self.cloud_trail_event = json.loads(item)
                 else:
                     self.cloud_trail_event = item
             if name == "Resources":

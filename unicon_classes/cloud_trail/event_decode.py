@@ -1,10 +1,12 @@
 from unicon_classes.cloud_trail import Event
-from unicon_classes.IAM import IAMBasic, IAMFactory
+from unicon_classes.IAM.IAM_factory import IAMFactory
+from unicon_classes.IAM.base import Base as IAMBasic
+
 
 class BasicDecode(Event):
     def __init__(self, event: dict):
         super().__init__(event=event, json_decode_cloud_trail_event=True)
-        self.identity: IAMBasic = ""
+        self.identity: IAMBasic = None
         self.aws_region = ""
         self.source_IP_address = ""
         self.user_agent = ""

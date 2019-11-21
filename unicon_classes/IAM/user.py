@@ -1,13 +1,12 @@
-from unicon_classes.IAM.base import Base
-from unicon_classes.IAM import IAMGroup
+import unicon_classes.IAM.base as IAMBasic
 from datetime import datetime
 from boto3_type_annotations.iam import Client
 from typing import List
 import boto3
 
 
-class User (Base):
-    def __init__(self):
+class User (IAMBasic.Base):
+    def __init__(self, name= None):
         super().__init__()
         self.type = "IAMUser"
         self.accessKeyId = ""
@@ -17,6 +16,9 @@ class User (Base):
         self.userID = ""
         self.tags: List[dict] = None
         self.permissionsBoundary: dict = None
+        if name is not None:
+            self.name = name
+            self.re_sync()
 
     def update_user(self, user: dict):
         for name, item in user.items():
@@ -30,7 +32,7 @@ class User (Base):
             if name == "Tags": self.tags = item
 
     def __eq__(self, other):
-        if isinstance(other,User):
+        if isinstance(other, User):
             if other.arn == self.arn and (other.name == self.name or other.userID == self.userID):
                 return True
         return False
@@ -38,7 +40,7 @@ class User (Base):
     def re_sync(self):
         if self.name != "":
             client: Client = boto3.client('iam')
-            response:dict = client.get_user(self.name)
+            response:dict = client.get_user(UserName=self.name)
             if 'User' in response:
                 self.update_user(response['User'])
             else:
@@ -46,5 +48,5 @@ class User (Base):
         else:
             raise Exception("Name Isn't Set When Trying Sync")
 
-    def in_group(self, group: IAMGroup) -> bool:
+    def in_group(self, group) -> bool:
         return group.in_group(self)

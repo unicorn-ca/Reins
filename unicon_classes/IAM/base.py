@@ -1,7 +1,7 @@
 class Base:
-    def __init__(self):
+    def __init__(self, name= ""):
         self.type = ""
-        self.name = ""
+        self.name = name
         self.accountID = ""
         self.arn = ""
         self.principalId = ""
