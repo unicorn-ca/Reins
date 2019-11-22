@@ -3,8 +3,8 @@ from pipeline_event.event_con import Event
 
 
 class ReporterEvent(ReporterEventInst, Event):
-    def __init__(self):
-        super().__init__()
+    def __init__(self, event: dict):
+        super().__init__(event=event)
         self.reporter_type: str = ""
         params = self.get_params()
         if "reporterType" in params:

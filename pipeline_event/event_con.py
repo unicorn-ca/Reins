@@ -1,4 +1,5 @@
 from typing import List
+import json
 
 from pipeline_event.event import Event as EventInst
 from pipeline_event.artifacts import Artifacts
@@ -15,6 +16,7 @@ class Event(EventInst):
         self.lambda_name: str = ""
         self.params = {}
         self.continuation_token = ""
+        self.raw_params = {}
         self.__convert(event)
 
     def set_account_id(self, item):
@@ -25,6 +27,9 @@ class Event(EventInst):
 
     def set_params(self, item: dict):
         self.params = item
+
+    def set_raw_params(self, item):
+        self.raw_params = item
 
     def set_continuation_token(self, item):
         self.continuation_token = item
@@ -46,6 +51,9 @@ class Event(EventInst):
 
     def get_params(self):
         return self.params
+
+    def get_raw_params(self) -> dict:
+        return self.raw_params
 
     def get_continuation_token(self):
         return self.continuation_token
@@ -74,15 +82,18 @@ class Event(EventInst):
             for name, item in event.items():
                 if name == "id":
                     self.set_id(item)
-                if name == "accountID":
+                if name == "accountId":
                     self.set_account_id(item)
                 if name == "data":
                     for data_name, data_item in item.items():
                         if data_name == "actionConfiguration":
                             if "configuration" in data_item:
-                                self.set_params(data_item["configuration"])
+                                self.set_raw_params(data_item["configuration"])
+                                if "UserParameters" in data_item["configuration"]:
+                                    print(data_item["configuration"]["UserParameters"])
+                                    self.set_params(json.loads(data_item["configuration"]["UserParameters"]))
                                 if "FunctionName" in data_item["configuration"]:
-                                    self.set_lambda_name( data_item["configuration"]["FunctionName"])
+                                    self.set_lambda_name(data_item["configuration"]["FunctionName"])
                         if data_name == "inputArtifacts":
                             temp = []
                             for artifact in data_item:

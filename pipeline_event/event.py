@@ -17,6 +17,10 @@ class Event(ABC):
         pass
 
     @abstractmethod
+    def get_raw_params(self) -> dict:
+        pass
+
+    @abstractmethod
     def get_continuation_token(self):
         pass
 
@@ -41,7 +45,11 @@ class Event(ABC):
         pass
 
     @abstractmethod
-    def set_params(self, item) -> dict:
+    def set_params(self, item):
+        pass
+
+    @abstractmethod
+    def set_raw_params(self, item):
         pass
 
     @abstractmethod
@@ -59,3 +67,9 @@ class Event(ABC):
     @abstractmethod
     def set_lambda_name(self, item):
         pass
+
+    def __str__(self):
+        return """AccountID = {0}
+        ID = {1}
+        Params = {2}
+        Lambda Name = {3}""".format(self.get_account_id(), self.get_id(), self.get_params(), self.get_lambda_name())

@@ -11,3 +11,8 @@ class ReporterEvent(Event):
     @abstractmethod
     def set_reporter_type(self, item):
         pass
+
+    def __str__(self):
+        ret = super().__str__()
+        return ret + """
+Reporter Type = {0}""".format(self.get_reporter_type())

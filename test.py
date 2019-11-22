@@ -1,15 +1,18 @@
 
 import argparse
+import json
 from cloud_trail_parser import Parser, LookupAttribute
 from code_commit_log import Log
 from unicon_classes.IAM.user import User
 from unicon_classes.IAM.group import Group
+from pipeline_event.reporter_event_con import ReporterEvent
 
 parser = argparse.ArgumentParser()
 
 parser.add_argument("-ctp", "--cloudtrailparser", help="Test Cloud Parser", action="store_true")
 parser.add_argument("-ccl", "--codecommitlog", help="Test CodeCommit Logs", action="store_true")
 parser.add_argument("-ugt", "--usergrouptest", help="Test User Groups Intrations", action="store_true")
+parser.add_argument("-plm", "--pipelinemapper", help="Test the mapping between Pipeline to the event", action="store_true")
 
 parser.add_argument("-a", "--all", help="Run All Tests", action="store_true")
 
@@ -62,3 +65,52 @@ if args.usergrouptest or args.all:
         print("User In Group Test : Failed")
     group.delete()
     print("----------- Finished User Groups  -----------")
+
+
+# ----- PipeLineMapper ----- #
+
+if args.pipelinemapper or args.all:
+    print("----------- Testing Pipeline Mapper -----------")
+    exampleJson = """{
+    "CodePipeline.job": {
+        "id": "11111111-abcd-1111-abcd-111111abcdef",
+        "accountId": "111111111111",
+        "data": {
+            "actionConfiguration": {
+                "configuration": {
+                    "FunctionName": "MyLambdaFunctionForAWSCodePipeline",
+                    "UserParameters": "some-input-such-as-a-URL"
+                }
+            },
+            "inputArtifacts": [
+                {
+                    "location": {
+                        "s3Location": {
+                            "bucketName": "the name of the bucket configured as the pipeline artifact store in Amazon S3, for example codepipeline-us-east-2-1234567890",
+                            "objectKey": "the name of the application, for example CodePipelineDemoApplication.zip"
+                        },
+                        "type": "S3"
+                    },
+                    "revision": null,
+                    "name": "ArtifactName"
+                }
+            ],
+            "outputArtifacts": [],
+            "artifactCredentials": {
+                "secretAccessKey": "wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY",
+                "sessionToken": "MIICiTCCAfICCQD6m7oRw0uXOjANBgkqhkiG9w0BAQUFADCBiDELMAkGA1UEBhMCVVMxCzAJBgNVBAgTAldBMRAwDgYDVQQHEwdTZWF0dGxlMQ8wDQYDVQQKEwZBbWF6b24xFDASBgNVBAsTC0lBTSBDb25zb2xlMRIwEAYDVQQDEwlUZXN0Q2lsYWMxHzAdBgkqhkiG9w0BCQEWEG5vb25lQGFtYXpvbi5jb20wHhcNMTEwNDI1MjA0NTIxWhcNMTIwNDI0MjA0NTIxWjCBiDELMAkGA1UEBhMCVVMxCzAJBgNVBAgTAldBMRAwDgYDVQQHEwdTZWF0dGxlMQ8wDQYDVQQKEwZBbWF6b24xFDASBgNVBAsTC0lBTSBDb25zb2xlMRIwEAYDVQQDEwlUZXN0Q2lsYWMxHzAdBgkqhkiG9w0BCQEWEG5vb25lQGFtYXpvbi5jb20wgZ8wDQYJKoZIhvcNAQEBBQADgY0AMIGJAoGBAMaK0dn+a4GmWIWJ21uUSfwfEvySWtC2XADZ4nB+BLYgVIk60CpiwsZ3G93vUEIO3IyNoH/f0wYK8m9TrDHudUZg3qX4waLG5M43q7Wgc/MbQITxOUSQv7c7ugFFDzQGBzZswY6786m86gpEIbb3OhjZnzcvQAaRHhdlQWIMm2nrAgMBAAEwDQYJKoZIhvcNAQEFBQADgYEAtCu4nUhVVxYUntneD9+h8Mg9q6q+auNKyExzyLwaxlAoo7TJHidbtS4J5iNmZgXL0FkbFFBjvSfpJIlJ00zbhNYS5f6GuoEDmFJl0ZxBHjJnyp378OD8uTs7fLvjx79LjSTbNYiytVbZPQUQ5Yaxu2jXnimvw3rrszlaEXAMPLE=",
+                "accessKeyId": "AKIAIOSFODNN7EXAMPLE"
+            },
+            "continuationToken": "A continuation token if continuing job",
+            "encryptionKey": { 
+              "id": "arn:aws:kms:us-west-2:111122223333:key/1234abcd-12ab-34cd-56ef-1234567890ab",
+              "type": "KMS"
+            }
+        }
+    }
+}"""
+    exampleDict = json.loads(exampleJson)
+    reporter = ReporterEvent(exampleDict)
+    print(reporter)
+
+    print("----------- Finished Pipeline Mapper  -----------")
