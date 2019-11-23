@@ -13,6 +13,7 @@ class Reporter:
         self.event: ReporterEvent = event
         self.cf: cloudformation.Client = boto3.client('cloudformation')
         self.cp: codepipeline.Client = boto3.client('codepipeline')
+        print("Running Reporter")
 
     @abstractmethod
     def handle(self):
@@ -24,5 +25,8 @@ class Reporter:
     def accept(self):
         self.cp.put_job_success_result(jobId=self.event.get_id())
 
-    def fail(self):
-        self.cp.put_job_failure_result(jobId=self.event.get_id())
+    def fail(self, errorMessage="GenericErrorMessage", errorType="JobFailed"):
+        self.cp.put_job_failure_result(jobId=self.event.get_id(), failureDetails={
+            'type': errorType,
+            'message': errorMessage
+        })

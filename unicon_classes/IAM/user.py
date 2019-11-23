@@ -2,6 +2,7 @@ import unicon_classes.IAM.base as IAMBasic
 from datetime import datetime
 from boto3_type_annotations.iam import Client
 from typing import List
+from unicon_classes.IAM.policy.user import UserPolicy
 import boto3
 
 
@@ -15,10 +16,25 @@ class User (IAMBasic.Base):
         self.path = ""
         self.userID = ""
         self.tags: List[dict] = None
-        self.permissionsBoundary: dict = None
+        self.permissionsBoundaryType = ""
+        self.permissionsBoundaryArn = ""
+        self.__policy_cache = None
+
         if name is not None:
             self.name = name
             self.re_sync()
+
+    def _get_policy(self) -> UserPolicy:
+        if self.__policy_cache is None:
+            if self.permissionsBoundaryArn == "":
+                self.re_sync()
+            if self.permissionsBoundaryArn == "":
+                raise Exception('Could not get policy ARN for user:' + self.name)
+            client: Client = boto3.client('iam')
+            temp = client.get_policy(self.permissionsBoundaryArn)
+            self.__policy_cache = client.get_user_policy(self.name, temp['PolicyName'])
+            self.__policy_cache = self.__policy_cache['PolicyDocument']
+        return UserPolicy(self.__policy_cache)
 
     def update_user(self, user: dict):
         for name, item in user.items():
@@ -28,7 +44,11 @@ class User (IAMBasic.Base):
             if name == "Arn": self.arn = item
             if name == "CreateDate": self.createDate = item
             if name == "PasswordLastUsed": self.passwordLastUsed = item
-            if name == "PermissionsBoundary": self.permissionsBoundary = item
+            if name == "PermissionsBoundary":
+                for in_name, in_item in item.items():
+                    if in_name == 'PermissionsBoundaryType': self.permissionsBoundaryType = in_item
+                    if in_name == 'PermissionsBoundaryArn' : self.permissionsBoundaryArn = in_item
+
             if name == "Tags": self.tags = item
 
     def __eq__(self, other):

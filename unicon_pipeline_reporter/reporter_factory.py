@@ -6,4 +6,4 @@ from unicon_pipeline_reporter.reporter_types import codecommit
 def get_reporter(event: ReporterEvent) -> Reporter:
     if event.get_reporter_type() != "":
         if event.get_reporter_type() == "codecommit":
-            return codecommit.Reporter(event)
+            return codecommit.CodeCommitReporter(event)
