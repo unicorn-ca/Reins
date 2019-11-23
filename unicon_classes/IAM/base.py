@@ -18,7 +18,7 @@ class Base(ABC):
         return self._policy
 
     @policy.setter
-    def policy(self, value:BasePolicy):
+    def policy(self, value: BasePolicy):
         self._policy = value
 
     @abstractmethod

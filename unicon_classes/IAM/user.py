@@ -6,7 +6,7 @@ from unicon_classes.IAM.policy.user import UserPolicy
 import boto3
 
 
-class User (IAMBasic.Base):
+class User(IAMBasic.Base):
     def __init__(self, name= None):
         super().__init__()
         self.type = "IAMUser"
@@ -48,7 +48,6 @@ class User (IAMBasic.Base):
                 for in_name, in_item in item.items():
                     if in_name == 'PermissionsBoundaryType': self.permissionsBoundaryType = in_item
                     if in_name == 'PermissionsBoundaryArn' : self.permissionsBoundaryArn = in_item
-
             if name == "Tags": self.tags = item
 
     def __eq__(self, other):
@@ -56,6 +55,27 @@ class User (IAMBasic.Base):
             if other.arn == self.arn and (other.name == self.name or other.userID == self.userID):
                 return True
         return False
+
+    @staticmethod
+    def get_all_users() -> list:
+        client: Client = boto3.client('iam')
+        more = True
+        marker = ""
+        ret = []
+        while more:
+            more = False
+            if marker == "":
+                luser = client.list_users()
+            else:
+                luser = client.list_users(Marker=marker)
+            for name,item in luser:
+                if name == 'Marker': marker = item
+                if name == 'IsTruncated': more = item
+                if name == 'Users':
+                    temp = User()
+                    temp.update_user(item)
+                    ret.append(temp)
+        return ret
 
     def re_sync(self):
         if self.name != "":
