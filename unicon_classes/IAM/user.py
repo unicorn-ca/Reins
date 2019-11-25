@@ -2,8 +2,9 @@ import unicon_classes.IAM.base as IAMBasic
 from datetime import datetime
 from boto3_type_annotations.iam import Client
 from typing import List
-from unicon_classes.IAM.policy.user import UserPolicy
+from unicon_classes.IAM.policy.user import UserPolicies
 import boto3
+import json
 
 
 class User(IAMBasic.Base):
@@ -24,19 +25,43 @@ class User(IAMBasic.Base):
             self.name = name
             self.re_sync()
 
-    def _get_policy(self) -> UserPolicy:
+    def _get_policies(self) -> List[UserPolicies]:
         if self.__policy_cache is None:
-            if self.permissionsBoundaryArn == "":
-                self.re_sync()
-            if self.permissionsBoundaryArn == "":
-                raise Exception('Could not get policy ARN for user:' + self.name)
             client: Client = boto3.client('iam')
-            temp = client.get_policy(self.permissionsBoundaryArn)
-            self.__policy_cache = client.get_user_policy(self.name, temp['PolicyName'])
-            self.__policy_cache = self.__policy_cache['PolicyDocument']
-        return UserPolicy(self.__policy_cache)
+            truncated = True
+            marker = ""
+            self.__policy_cache = []
+            while truncated:
+                truncated = False
+                if marker == "":
+                    policies = client.list_attached_user_policies(
+                        UserName=self.name
+                    )
+                else:
+                    policies = client.list_attached_user_policies(
+                        UserName=self.name,
+                        Marker=marker
+                    )
+                for name, item in policies.items():
+                    if name == 'IsTruncated' : truncated = item
+                    if name == 'Marker': marker = item
+                    if name == 'AttachedPolicies' :
+                        print("------------- USER: "+self.name+" ------------")
+                        for policy in item:
+                            # try:
+                                temp = client.get_policy(PolicyArn=policy['PolicyArn'])
+                                temp = client.get_policy_version(PolicyArn=policy['PolicyArn'], VersionId=temp['Policy']['DefaultVersionId'])
+                                # temp = client.get_user_policy(UserName=self.name, PolicyName=policy['PolicyName'])
+                                # temp = json.loads()
+                                temp = temp['PolicyVersion']['Document']
+                                print(temp)
+                                self.__policy_cache.append(UserPolicies(temp))
+                            # except Exception as e:
+                            #     print(str(e))
+        return self.__policy_cache
 
     def update_user(self, user: dict):
+        print(user)
         for name, item in user.items():
             if name == "Path": self.path = item
             if name == "UserName": self.name = item
@@ -68,13 +93,14 @@ class User(IAMBasic.Base):
                 luser = client.list_users()
             else:
                 luser = client.list_users(Marker=marker)
-            for name,item in luser:
+            for name, item in luser.items():
                 if name == 'Marker': marker = item
                 if name == 'IsTruncated': more = item
                 if name == 'Users':
-                    temp = User()
-                    temp.update_user(item)
-                    ret.append(temp)
+                    for user_dict in item:
+                        temp = User()
+                        temp.update_user(user_dict)
+                        ret.append(temp)
         return ret
 
     def re_sync(self):

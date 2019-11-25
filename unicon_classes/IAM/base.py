@@ -1,4 +1,5 @@
 from abc import ABC, abstractmethod
+from typing import List
 from unicon_classes.IAM.policy.base import BasePolicy
 
 
@@ -9,20 +10,20 @@ class Base(ABC):
         self.accountID = ""
         self.arn = ""
         self.principalId = ""
-        self._policy: BasePolicy = None
+        self._policies: List[BasePolicy] = None
 
     @property
-    def policy(self):
-        if self._policy is None:
-            self._policy = self._get_policy()
-        return self._policy
+    def policies(self):
+        if self._policies is None:
+            self._policies = self._get_policies()
+        return self._policies
 
-    @policy.setter
-    def policy(self, value: BasePolicy):
-        self._policy = value
+    @policies.setter
+    def policies(self, value: BasePolicy):
+        self._policies = value
 
     @abstractmethod
-    def _get_policy(self) -> BasePolicy:
+    def _get_policies(self) -> List[BasePolicy]:
         pass
 
 

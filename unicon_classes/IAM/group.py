@@ -1,5 +1,6 @@
 import unicon_classes.IAM.base as IAMBase
 import unicon_classes.IAM.user as IAMUser
+from unicon_classes.IAM.policy.group import GroupPolicy
 from datetime import datetime
 from boto3_type_annotations.iam import Client
 from typing import List
@@ -14,6 +15,7 @@ class Group (IAMBase.Base):
         self.groupID = ""
         self.createDate: datetime = None
         self.users: List[IAMUser.User] = None
+        self.__policy_cache = None
         if name is not None:
             self.name = name
             self.re_sync()
@@ -25,6 +27,11 @@ class Group (IAMBase.Base):
             if name == "GroupId": self.groupID = item
             if name == "Arn": self.arn = item
             if name == "CreateDate": self.createDate = item
+
+    def _get_policies(self) -> List[GroupPolicy]:
+        if self.__policy_cache is None:
+            pass
+        return [GroupPolicy()]
 
     @staticmethod
     def create(group_name):

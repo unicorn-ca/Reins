@@ -1,10 +1,12 @@
 
 import argparse
 import json
+from typing import List
 from cloud_trail_parser import Parser, LookupAttribute
 from code_commit_log import Log
 from unicon_classes.IAM.user import User
 from unicon_classes.IAM.group import Group
+from unicon_classes.IAM.policy.user import UserPolicies
 from pipeline_event.reporter_event_con import ReporterEvent
 
 parser = argparse.ArgumentParser()
@@ -13,6 +15,7 @@ parser.add_argument("-ctp", "--cloudtrailparser", help="Test Cloud Parser", acti
 parser.add_argument("-ccl", "--codecommitlog", help="Test CodeCommit Logs", action="store_true")
 parser.add_argument("-ugt", "--usergrouptest", help="Test User Groups Intrations", action="store_true")
 parser.add_argument("-plm", "--pipelinemapper", help="Test the mapping between Pipeline to the event", action="store_true")
+parser.add_argument("-pc", "--policychecker", help="Test for overly permissive users in the account (no *)", action="store_true")
 
 parser.add_argument("-a", "--all", help="Run All Tests", action="store_true")
 
@@ -114,3 +117,30 @@ if args.pipelinemapper or args.all:
     print(reporter)
 
     print("----------- Finished Pipeline Mapper  -----------")
+
+# ----- CodeCommitLog ----- #
+
+if args.policychecker or args.all:
+    print("----------- Testing Policy Checker -----------")
+    policy_group = Group('StephenTestGroup')
+    users = User.get_all_users()
+    errors = []
+    for user in users:
+        if policy_group.in_group(user=user):
+            continue
+        user_policy: List[UserPolicies] = user.policies
+        for up_policy in user_policy:
+            print(up_policy)
+            for statement in up_policy.statements:
+                for policy, conditions in statement.actions.items():
+                    for condition in conditions:
+                        print(condition)
+                        if '*' in condition:
+                            errors.append({'user': user.name, 'policy': policy, 'statement': condition})
+    if len(errors) > 0:
+        error_string = "Error, too over permissive users:\n"
+        for error in errors:
+            error_string = error_string + "User:{0} Policy:{1} Statement:{2}\n".format(
+                error['user'], error['policy'], error['statement'])
+        raise Exception(error_string)
+    print("----------- Finished Policy Checker  -----------")
