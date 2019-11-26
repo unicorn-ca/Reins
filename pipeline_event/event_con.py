@@ -90,8 +90,10 @@ class Event(EventInst):
                             if "configuration" in data_item:
                                 self.set_raw_params(data_item["configuration"])
                                 if "UserParameters" in data_item["configuration"]:
-                                    print(data_item["configuration"]["UserParameters"])
-                                    self.set_params(json.loads(data_item["configuration"]["UserParameters"]))
+                                    if isinstance(data_item["configuration"]["UserParameters"], str):
+                                        self.set_params(json.loads(data_item["configuration"]["UserParameters"]))
+                                    else:
+                                        self.set_params(data_item["configuration"]["UserParameters"])
                                 if "FunctionName" in data_item["configuration"]:
                                     self.set_lambda_name(data_item["configuration"]["FunctionName"])
                         if data_name == "inputArtifacts":

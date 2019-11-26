@@ -11,7 +11,6 @@ class PolicyStatement:
         self._decode(statement=statement)
 
     def _decode(self, statement: dict):
-        # print(statement)
         for name, item in statement.items():
             if name == "Sid": self.sid = item
             if name == "Effect": self.effect = item

@@ -25,7 +25,6 @@ class PolicyCheckerReporter(Reporter):
                             for condition in conditions:
                                 if '*' in condition:
                                     errors.append({'user': user.name, 'policy': policy, 'statement': condition})
-                                    print("User:{0} Policy:{1} Statement:{2}".format(user.name, policy, condition))
                 if len(errors) > 0:
                     error_string = "Error, too over permissive users:\n"
                     for error in errors:

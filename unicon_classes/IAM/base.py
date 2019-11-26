@@ -1,9 +1,8 @@
-from abc import ABC, abstractmethod
 from typing import List
 from unicon_classes.IAM.policy.base import BasePolicy
 
 
-class Base(ABC):
+class Base():
     def __init__(self, name= ""):
         self.type = ""
         self.name = name
@@ -22,7 +21,6 @@ class Base(ABC):
     def policies(self, value: BasePolicy):
         self._policies = value
 
-    @abstractmethod
     def _get_policies(self) -> List[BasePolicy]:
         pass
 

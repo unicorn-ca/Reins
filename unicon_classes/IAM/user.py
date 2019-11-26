@@ -46,22 +46,14 @@ class User(IAMBasic.Base):
                     if name == 'IsTruncated' : truncated = item
                     if name == 'Marker': marker = item
                     if name == 'AttachedPolicies' :
-                        print("------------- USER: "+self.name+" ------------")
                         for policy in item:
-                            # try:
-                                temp = client.get_policy(PolicyArn=policy['PolicyArn'])
-                                temp = client.get_policy_version(PolicyArn=policy['PolicyArn'], VersionId=temp['Policy']['DefaultVersionId'])
-                                # temp = client.get_user_policy(UserName=self.name, PolicyName=policy['PolicyName'])
-                                # temp = json.loads()
-                                temp = temp['PolicyVersion']['Document']
-                                print(temp)
-                                self.__policy_cache.append(UserPolicies(temp))
-                            # except Exception as e:
-                            #     print(str(e))
+                            temp = client.get_policy(PolicyArn=policy['PolicyArn'])
+                            temp = client.get_policy_version(PolicyArn=policy['PolicyArn'], VersionId=temp['Policy']['DefaultVersionId'])
+                            temp = temp['PolicyVersion']['Document']
+                            self.__policy_cache.append(UserPolicies(temp))
         return self.__policy_cache
 
     def update_user(self, user: dict):
-        print(user)
         for name, item in user.items():
             if name == "Path": self.path = item
             if name == "UserName": self.name = item

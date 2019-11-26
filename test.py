@@ -82,7 +82,7 @@ if args.pipelinemapper or args.all:
             "actionConfiguration": {
                 "configuration": {
                     "FunctionName": "MyLambdaFunctionForAWSCodePipeline",
-                    "UserParameters": "some-input-such-as-a-URL"
+                    "UserParameters": {"reporterType":"codecommit","repo":"stephen-test-pipeline","branch":"master"}
                 }
             },
             "inputArtifacts": [
@@ -118,7 +118,7 @@ if args.pipelinemapper or args.all:
 
     print("----------- Finished Pipeline Mapper  -----------")
 
-# ----- CodeCommitLog ----- #
+# ----- Testing Policy Checker ----- #
 
 if args.policychecker or args.all:
     print("----------- Testing Policy Checker -----------")
@@ -130,11 +130,9 @@ if args.policychecker or args.all:
             continue
         user_policy: List[UserPolicies] = user.policies
         for up_policy in user_policy:
-            print(up_policy)
             for statement in up_policy.statements:
                 for policy, conditions in statement.actions.items():
                     for condition in conditions:
-                        print(condition)
                         if '*' in condition:
                             errors.append({'user': user.name, 'policy': policy, 'statement': condition})
     if len(errors) > 0:
