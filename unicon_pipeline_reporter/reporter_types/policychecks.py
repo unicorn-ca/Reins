@@ -2,13 +2,13 @@ from unicon_pipeline_reporter.reporter import Reporter
 from unicon_classes.IAM.group import Group as IAMGroup
 from unicon_classes.IAM.user import User as IAMUser
 from unicon_classes.IAM.policy.user import UserPolicies
+from typing import List
 
-import functools
 
 class PolicyCheckerReporter(Reporter):
 
     def handle(self):
-        print("Running CodeCommit")
+        print("Running PolicyChecker")
         try:
             if self.event.get_params() is not {}:
                 param = self.event.get_params()
@@ -19,12 +19,13 @@ class PolicyCheckerReporter(Reporter):
                 for user in users:
                     if policy_group.in_group(user=user):
                         continue
-                    user_policy: UserPolicies = user.policy
-                    for statement in user_policy.statements:
-                        for policy, conditions in statement.actions.items():
-                            for condition in conditions:
-                                if '*' in condition:
-                                    errors.append({'user': user.name, 'policy': policy, 'statement': condition})
+                    user_policy: List[UserPolicies] = user.policies
+                    for up_policy in user_policy:
+                        for statement in up_policy.statements:
+                            for policy, conditions in statement.actions.items():
+                                for condition in conditions:
+                                    if '*' in condition:
+                                        errors.append({'user': user.name, 'policy': policy, 'statement': condition})
                 if len(errors) > 0:
                     error_string = "Error, too over permissive users:\n"
                     for error in errors:
