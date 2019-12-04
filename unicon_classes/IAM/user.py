@@ -4,7 +4,6 @@ from boto3_type_annotations.iam import Client
 from typing import List
 from unicon_classes.IAM.policy.user import UserPolicies
 import boto3
-import json
 
 
 class User(IAMBasic.Base):

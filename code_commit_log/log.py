@@ -25,7 +25,7 @@ class Log:
     @staticmethod
     def get_last_confirmed_commit(repo, branch, events: List[CodeCommitEvent] = None):
         if events is None:
-            events = Log.get_events()
+            events = Log.get_events(start_time=datetime.now() + timedelta(hours=12))
 
         found: CodeCommitEvent = None
 
