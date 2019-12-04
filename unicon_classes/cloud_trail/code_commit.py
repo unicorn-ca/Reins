@@ -3,11 +3,17 @@ from typing import List
 
 
 class CodeCommitRequestParameter:
-    def __init__(self, params: dict):
+    def __init__(self, params: dict = None):
         self.branch = ""
         self.commit = ""
         self.branch_path = ""
-        self.__decode(params= params)
+        if params is not None:
+            self.__decode(params=params)
+
+    def __eq__(self, other):
+        if isinstance(other, CodeCommitRequestParameter):
+            return other.branch == self.branch or other.commit == self.commit or self.branch_path == other.branch_path
+        return False
 
     def __decode(self, params:dict):
         for name, item in params.items():

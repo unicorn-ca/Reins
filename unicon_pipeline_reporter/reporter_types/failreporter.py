@@ -4,11 +4,11 @@ from unicon_classes.IAM.group import Group as IAMGroup
 from unicon_classes.IAM.user import User as IAMUser
 
 
-class PassReporter(Reporter):
+class FailReporter(Reporter):
 
     def handle(self):
-        print("Running Auto Pass")
-        self.accept()
+        print("Running Auto Fail")
+        self.fail("Unreconised Event")
 
 
 

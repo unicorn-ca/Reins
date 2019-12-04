@@ -8,7 +8,7 @@ from pipeline_event.artifacts_con import Artifacts as ArtifactsCon
 
 class Event(EventInst):
 
-    def __init__(self, event):
+    def __init__(self, event= None):
         self.id: str = ""
         self.account_id: str = ""
         self.input_artifacts: List[Artifacts] = []
@@ -17,7 +17,8 @@ class Event(EventInst):
         self.params = {}
         self.continuation_token = ""
         self.raw_params = {}
-        self.__convert(event)
+        if event is not None:
+            self.__convert(event)
 
     def set_account_id(self, item):
         self.account_id = item

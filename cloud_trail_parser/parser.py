@@ -1,5 +1,5 @@
 from unicon_classes.cloud_trail import EventFactory,Event
-from typing import List
+from typing import List, Callable
 from datetime import datetime, timedelta
 import time
 import boto3
@@ -24,7 +24,7 @@ class Parser:
         self.cloud_trail: Client = boto3.client('cloudtrail')
 
     def fetch(self, lookup_attributes: List[LookupAttribute] = None, start_time: datetime = None,
-              end_time: datetime = None) -> List[Event]:
+              end_time: datetime = None, finish_func: Callable[[Event], bool] = None) -> List[Event]:
         if lookup_attributes is None: lookup_attributes = []
         if start_time is None: start_time = datetime.now() + timedelta(-30)
         if end_time is None: end_time = datetime.now()
@@ -55,9 +55,13 @@ class Parser:
                 if name == 'NextToken':
                     next_token_flag = True
                     next_token = item
-                    time.sleep(1)
                 elif name == "Events":
                     for event in item:
-                        events.append(EventFactory.create(event))
-
+                        temp = EventFactory.create(event)
+                        events.append(temp)
+                        if finish_func is not None:
+                            if finish_func(temp):
+                                return events
+            if next_token_flag:
+                time.sleep(1)
         return events
