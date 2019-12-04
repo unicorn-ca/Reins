@@ -29,6 +29,7 @@ class Event:
         self.cloud_trail_event = ""
         self.__convert(event, json_decode_cloud_trail_event)
 
+
     def __convert(self, event: dict, json_decode_cloud_trail_event: bool = False):
         for name, item in event.items():
             if name == 'EventId' : self.event_ID = item
