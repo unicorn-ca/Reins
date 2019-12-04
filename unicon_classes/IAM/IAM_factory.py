@@ -1,7 +1,7 @@
 from unicon_classes.IAM.user import User
 from unicon_classes.IAM.base import Base
 from unicon_classes.IAM.group import Group
-
+from unicon_classes.IAM.root import Root
 
 
 class IAMFactory:
@@ -15,6 +15,9 @@ class IAMFactory:
                 if name == "accessKeyId": iam.accessKeyId = item
                 if name == "userName":
                     iam.name = item
+
+        elif user['type'] == "Root":
+            iam: Root = Root()
 
         elif user['type'] == "IAMGroup":
             iam: Group = Group()

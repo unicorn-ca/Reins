@@ -12,6 +12,9 @@ class BasicDecode(Event):
         self.user_agent = ""
         self.request_parameters = {}
         self.recipient_account_id = ""
+        self.error = False
+        self.error_code = ""
+        self.error_message = ""
         self.__extract(self.cloud_trail_event)
 
     def __extract(self, log: dict):
@@ -24,5 +27,11 @@ class BasicDecode(Event):
             if name == 'recipientaccountid': self.aws_region = item
             if name == 'eventtype': self.event_type = item
             if name == 'useridentity' : self.identity = IAMFactory.create(item)
+            if name == 'errorCode':
+                self.error_code = item
+                self.error = True
+            if name == 'errorMessage':
+                self.error_message = item
+                self.error = True
 
 
