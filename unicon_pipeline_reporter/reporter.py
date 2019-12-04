@@ -44,7 +44,7 @@ class Reporter:
 
     def fail(self, errorMessage="GenericErrorMessage", errorType="JobFailed"):
         if self.__fail is not None:
-            self.__fail(self, errorMessage, errorType)
+            self.__fail(errorMessage, errorType)
         else:
             self.cp.put_job_failure_result(jobId=self.event.get_id(), failureDetails={
                 'type': errorType,

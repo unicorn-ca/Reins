@@ -16,7 +16,7 @@ def handle(event, context,
         temp.set_lambda_name(context.function_name)
         temp.set_id(context.aws_request_id)
         temp.set_reporter_type(event['reporterType'])
-        reporter = get_reporter(ReporterEvent(event))
+        reporter = get_reporter(temp)
     if accept is not None:
         reporter.set_accept(accept)
     if fail is not None:

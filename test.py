@@ -8,14 +8,24 @@ from unicon_classes.IAM.user import User
 from unicon_classes.IAM.group import Group
 from unicon_classes.IAM.policy.user import UserPolicies
 from pipeline_event.reporter_event_con import ReporterEvent
+from index import handler
+from unicon_classes.testing.lamda_context import Context
+
+def accept():
+    print("The Test Has Passed")
+
+def failed(errorMessage,errorType):
+    print("Failed Test Reason: " + errorMessage)
 
 parser = argparse.ArgumentParser()
 
 parser.add_argument("-ctp", "--cloudtrailparser", help="Test Cloud Parser", action="store_true")
 parser.add_argument("-ccl", "--codecommitlog", help="Test CodeCommit Logs", action="store_true")
+parser.add_argument("-cc2", "--codecommit2", help="Test CodeCommit Logs", action="store_true")
 parser.add_argument("-ugt", "--usergrouptest", help="Test User Groups Intrations", action="store_true")
 parser.add_argument("-plm", "--pipelinemapper", help="Test the mapping between Pipeline to the event", action="store_true")
 parser.add_argument("-pc", "--policychecker", help="Test for overly permissive users in the account (no *)", action="store_true")
+parser.add_argument("-pc2", "--policychecker2", help="Test for overly permissive users in the account (no *)", action="store_true")
 
 parser.add_argument("-a", "--all", help="Run All Tests", action="store_true")
 
@@ -142,4 +152,38 @@ if args.policychecker or args.all:
             error_string = error_string + "User:{0} Policy:{1} Statement:{2}\n".format(
                 error['user'], error['policy'], error['statement'])
         raise Exception(error_string)
+    print("----------- Finished Policy Checker  -----------")
+
+
+if args.policychecker2 or args.all:
+    print("----------- Testing Policy Checker2 -----------")
+    temp = Context()
+    temp.function_name = "test"
+    temp.aws_request_id = "2323232"
+    temp_event = {
+        "reporterType": "policychecker",
+        "policy.access.group": "StephenTestGroup"
+    }
+    try:
+        handler(temp_event, temp, accept, failed)
+    except:
+        pass
+    print("----------- Finished Policy Checker  -----------")
+
+
+if args.codecommit2 or args.all:
+    print("----------- Testing Cloud Commit 2 -----------")
+    temp = Context()
+    temp.function_name = "test"
+    temp.aws_request_id = "2323232"
+    temp_event = {
+        "reporterType": "codecommit",
+        "group": "StephenTestGroup",
+        "branch": "master",
+        "repo": "stephen-test-pipeline"
+    }
+    try:
+        handler(temp_event, temp, accept, failed)
+    except:
+        pass
     print("----------- Finished Policy Checker  -----------")

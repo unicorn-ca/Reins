@@ -12,7 +12,8 @@ class CodeCommitRequestParameter:
 
     def __eq__(self, other):
         if isinstance(other, CodeCommitRequestParameter):
-            return other.branch == self.branch or other.commit == self.commit or self.branch_path == other.branch_path
+            return other.branch.lower() == self.branch.lower() or other.commit.lower() == self.commit.lower() \
+                   or self.branch_path.lower() == other.branch_path.lower()
         return False
 
     def __decode(self, params:dict):

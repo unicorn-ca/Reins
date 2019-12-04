@@ -5,6 +5,9 @@ from unicon_classes.IAM.user import User
 from unicon_classes.IAM.group import Group
 from pipeline_event.reporter_event_con import ReporterEvent
 
+from index import handler
+from unicon_classes.testing.lamda_context import Context
+
 
 # ----- CloudTrailParser ----- #
 
