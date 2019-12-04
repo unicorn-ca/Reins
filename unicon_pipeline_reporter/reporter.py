@@ -38,7 +38,7 @@ class Reporter:
 
     def accept(self):
         if self.__accept is not None:
-            self.__accept(self)
+            self.__accept()
         else:
             self.cp.put_job_success_result(jobId=self.event.get_id())
 

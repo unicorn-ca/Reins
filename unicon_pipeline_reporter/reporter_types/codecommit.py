@@ -2,6 +2,7 @@ from unicon_pipeline_reporter.reporter import Reporter
 from code_commit_log import Log
 from unicon_classes.IAM.group import Group as IAMGroup
 from unicon_classes.IAM.user import User as IAMUser
+from unicon_classes.IAM.root import Root as IAMRoot
 
 
 class CodeCommitReporter(Reporter):
@@ -16,6 +17,8 @@ class CodeCommitReporter(Reporter):
                     raise Exception("Could Not Find Last Commit")
                 check_group = IAMGroup(name=param['group'])
                 compare_user = last_commit.identity
+                if isinstance(compare_user, IAMRoot):
+                    raise Exception("Root isn't allowed to commit to the pipeline")
                 if isinstance(compare_user, IAMUser):
                     if check_group.in_group(compare_user):
                         print("PASSED TEST")

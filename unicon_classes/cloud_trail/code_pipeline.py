@@ -56,12 +56,14 @@ class CodePipeline(EventDecode):
         self.new_version = 0
         self.old_stages: List[CodePipelineStages] = []
         self.new_stages: List[CodePipelineStages] = []
-        self.__code_commit_decode(self.cloud_trail_event)
+        self.__code_pipeline_decode(self.cloud_trail_event)
 
-    def __code_commit_decode(self, event:dict):
+    def __code_pipeline_decode(self, event:dict):
         for name, item in event.items():
+            if item is None:
+                continue
             if name == 'requestParameters':
-                if 'pipeline' in item:
+                if  'pipeline' in item:
                     for name_inner, item_inner in item['pipeline'].items():
                         if name_inner == 'name': self.old_pipeline_name = item_inner
                         if name_inner == 'roleArn': self.old_role_arn = item_inner

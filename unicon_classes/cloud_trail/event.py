@@ -7,7 +7,7 @@ class EventResources:
     def __init__(self, resource: dict):
         self.name = ""
         self.type = ""
-        self.__convert(dict)
+        self.__convert(resource)
 
     def __convert(self, resource: dict):
         for name, item in resource.items():

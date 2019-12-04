@@ -22,10 +22,11 @@ parser = argparse.ArgumentParser()
 parser.add_argument("-ctp", "--cloudtrailparser", help="Test Cloud Parser", action="store_true")
 parser.add_argument("-ccl", "--codecommitlog", help="Test CodeCommit Logs", action="store_true")
 parser.add_argument("-cc2", "--codecommit2", help="Test CodeCommit Logs", action="store_true")
-parser.add_argument("-ugt", "--usergrouptest", help="Test User Groups Intrations", action="store_true")
+parser.add_argument("-ugt", "--usergrouptest", help="Test User Groups", action="store_true")
 parser.add_argument("-plm", "--pipelinemapper", help="Test the mapping between Pipeline to the event", action="store_true")
 parser.add_argument("-pc", "--policychecker", help="Test for overly permissive users in the account (no *)", action="store_true")
 parser.add_argument("-pc2", "--policychecker2", help="Test for overly permissive users in the account (no *)", action="store_true")
+parser.add_argument("-mc", "--multicheck", help="Checks Past Events for unusual activities", action="store_true")
 
 parser.add_argument("-a", "--all", help="Run All Tests", action="store_true")
 
@@ -186,4 +187,19 @@ if args.codecommit2 or args.all:
         handler(temp_event, temp, accept, failed)
     except:
         pass
+    print("----------- Finished Policy Checker  -----------")
+
+
+if args.multicheck or args.all:
+    print("----------- Testing Cloud Commit 2 -----------")
+    temp = Context()
+    temp.function_name = "test"
+    temp.aws_request_id = "2323232"
+    temp_event = {
+        "reporterType": "multichecker"
+    }
+    # try:
+    handler(temp_event, temp, accept, failed)
+    # except:
+    #     pass
     print("----------- Finished Policy Checker  -----------")

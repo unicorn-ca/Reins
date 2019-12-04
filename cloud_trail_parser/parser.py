@@ -63,5 +63,6 @@ class Parser:
                             if finish_func(temp):
                                 return events
             if next_token_flag:
-                time.sleep(1)
+                # time.sleep(1)
+                pass
         return events
