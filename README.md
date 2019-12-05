@@ -1,4 +1,4 @@
-# Unicorn Reporter(Resins)
+# Unicorn Reporter(Reins)
 ## Overview
 - A framework for **AWS Lambda** function that's designed to be injected into stages of a **AWS CodePipeline**:
 - Example Reporters (Can Be Seen in the `/unicon_pipeline_reporter/reporter_types`)
