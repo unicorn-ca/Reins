@@ -163,7 +163,7 @@ if args.policychecker2 or args.all:
     temp.aws_request_id = "2323232"
     temp_event = {
         "reporterType": "policychecker",
-        "policy.access.group": "StephenTestGroup"
+        "group": "StephenTestGroup"
     }
     try:
         handler(temp_event, temp, accept, failed)

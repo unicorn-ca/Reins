@@ -12,6 +12,8 @@ class CodeCommitReporter(Reporter):
         try:
             if self.event.get_params() is not {}:
                 param = self.event.get_params()
+                if 'repo' not in param or 'branch' not in param or 'group' not in param:
+                    raise Exception('Code Commit Reporter Needs: "repo", "branch" and "group" its user params')
                 last_commit = Log.get_last_confirmed_commit(param['repo'], param['branch'])
                 if last_commit is None:
                     raise Exception("Could Not Find Last Commit")

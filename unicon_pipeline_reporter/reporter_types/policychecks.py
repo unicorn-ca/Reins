@@ -25,9 +25,10 @@ class PolicyCheckerReporter(Reporter):
                     for up_policy in user_policy:
                         for statement in up_policy.statements:
                             for policy, conditions in statement.actions.items():
-                                if policy in ['*', 'codecommit', 's3', 'lambda']:
+                                if policy in ['*', 'codecommit', 's3', 'lambda', 'codepipeline']:
                                     for condition in conditions:
-                                        if '*' in condition:
+                                        if '*' in condition or 'Put' in condition or 'Delete' in \
+                                                condition or 'Update' in condition or 'Disable' in condition:
                                             errors.append({'user': user.name, 'policy': policy, 'statement': condition})
                 if len(errors) > 0:
                     error_string = "Error, too over permissive users:\n"
