@@ -196,7 +196,8 @@ if args.multicheck or args.all:
     temp.function_name = "test"
     temp.aws_request_id = "2323232"
     temp_event = {
-        "reporterType": "multichecker"
+        "reporterType": "multichecker",
+        "group": "StephenTestGroup",
     }
     # try:
     handler(temp_event, temp, accept, failed)
