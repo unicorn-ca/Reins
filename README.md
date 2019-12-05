@@ -11,7 +11,7 @@
 	- MulitChecker:
 		- Checks if any roots activities 
 		- Checks for any unauthorised access to pipeline resouces
-- It can also work standalone a it's own lambda function (The user Params are just the request params)
+- It can also work as standalone lambda function (The user Params are just the request params)
 - This also has **CLI** to do local auditing (in alpha testing)
 - This project was initially designed for Unicorn pipeline, but has been adapted to work for most AWS pipeline 
 
@@ -44,6 +44,10 @@ For **policychecker**
 For **codecommit**
 ```json
 {"reporterType":"codecommit","branch":"The CodeCommit Branch","repo":"The CodeCommit Repo","group":"The Allowed Commit Group"}
+```
+For **multi-check**
+```json
+{"reporterType":"multichecker","group":"The Admin Group"}
 ```
 For **To Add SNS Notifcation** (Don't need both)
 ```json
