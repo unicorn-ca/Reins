@@ -38,7 +38,7 @@ For **codecommit**
 ```json
 {"reporterType":"codecommit","branch":"The CodeCommit Branch","repo":"The CodeCommit Repo","group":"The Allowed Commit Group"}
 ```
-For **To Add SNS Notifcation** (Don't need both"
+For **To Add SNS Notifcation** (Don't need both)
 ```json
 {"accept_sns_arn":"The ARN of sucessful Topic","fail_sns_arn":"The ARN of fail Topic"}
 ```
