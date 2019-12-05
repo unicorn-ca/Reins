@@ -1,11 +1,18 @@
-# Unicorn Reporter
+# Unicorn Reporter(Resins)
 ## Overview
-- A  **AWS Lambda** function that's designed to be injected into stages of a **AWS CodePipeline** , It will:
-	-  Check for any overly permissive user/role accounts
-		- Any user/role/group with `*` in it's resource or actions
-	-  Checks if the last commit was made by a valid user 
-	- Checks the integrity of the last commit
-	- Checks if anything if the pipeline is running under root
+- A framework for **AWS Lambda** function that's designed to be injected into stages of a **AWS CodePipeline**:
+- Example Reporters (Can Be Seen in the `/unicon_pipeline_reporter/reporter_types`)
+	- PolicyChecks
+		-  Check for any overly permissive user/role accounts
+			- Any user/role/group with `*` in it's resource or actions
+		- If any non-auth user has write access to Pipeline resouces
+	- CodeCommit:
+		- Checks if the last commit was made by a valid user
+	- MulitChecker:
+		- Checks if any roots activities 
+		- Checks for any unauthorised access to pipeline resouces
+- It can also work standalone a it's own lambda function (The user Params are just the request params)
+- This also has **CLI** to do local auditing (in alpha testing)
 - This project was initially designed for Unicorn pipeline, but has been adapted to work for most AWS pipeline 
 
 ## Assumptions
@@ -24,7 +31,7 @@ The required role permissions for each reporter type
 | policychecker | iam.get_policy<br>iam.get_policy_version<br>iam.list_attached_user_policies<br>iam.list_attached_group_policies<br>iam.list_attached_role_policies |
 SNS Notification | SNS.publish
 
-## Installation
+## Installation (For Pipeline)
 
  1. Download the `funtion.zip` file from release
  2. Upload  the `funtion.zip` to lambda with the config `runtime:python3.6` `handler:index.handler` `ExecutionRole:a role with the required permssions` `timeout:4min`
