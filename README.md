@@ -66,7 +66,7 @@ For **To Add SNS Notifcation** (Don't need both)
  4. run `python3 cli.py TheNameOfTheReport(The reporter type from above) '{Same User params as above minus 'reporterType'}'`
  
  ### Example
- If your using the in built checkers you can run: (replace "ADMINGROUPNAME" with your group name)
- `python3 cli.py policychecker '{"group":"ADMINGROUPNAME"}'`
+ If your using the in built checkers you can run: (replace "ADMINGROUPNAME" with your group name)<br>
+ ```python3 cli.py policychecker '{"group":"ADMINGROUPNAME"}'```
  
  
