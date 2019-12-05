@@ -12,7 +12,7 @@
 		- Checks if any roots activities 
 		- Checks for any unauthorised access to pipeline resouces
 - It can also work as standalone lambda function (The user Params are just the request params)
-- This also has **CLI** to do local auditing (in alpha testing)
+- This also has a **CLI** usesed to run the project locally 
 - This project was initially designed for Unicorn pipeline, but has been adapted to work for most AWS pipeline 
 
 ## Assumptions
