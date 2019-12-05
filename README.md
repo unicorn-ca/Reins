@@ -1,4 +1,4 @@
-# Unicorn Reporter(Reins)
+# Unicorn Reporter (Reins)
 ## Overview
 - A framework for **AWS Lambda** function that's designed to be injected into stages of a **AWS CodePipeline**:
 - Example Reporters (Can Be Seen in the `/unicon_pipeline_reporter/reporter_types`)
@@ -34,7 +34,7 @@ SNS Notification | SNS.publish
 ## Installation (For Pipeline)
 
  1. Download the `funtion.zip` file from release
- 2. Upload  the `funtion.zip` to lambda with the config `runtime:python3.6` `handler:index.handler` `ExecutionRole:a role with the required permssions` `timeout:4min`
+ 2. Upload  the `funtion.zip` to lambda with the config `runtime:python3.6` `handler:index.handler` `ExecutionRole:a role with the required permssions` `timeout:10min`
  3. Add an invoke action to your pipeline which points to the new lambda with the User Param:
 
 For **policychecker**
@@ -53,3 +53,20 @@ For **To Add SNS Notifcation** (Don't need both)
 ```json
 {"accept_sns_arn":"The ARN of sucessful Topic","fail_sns_arn":"The ARN of fail Topic"}
 ```
+
+## Installation (For CLI)
+### Requirements
+- `python 3.6+`
+- `AWS CLI`
+
+### Steps
+ 1. Download the `funtion.zip` file from release
+ 2. Unzip `function.zip` into an empty folder
+ 3. Run `aws configure` and enter your `AWS Access Key ID`, `AWS Secret Access Key` and `Default region name`
+ 4. run `python3 cli.py TheNameOfTheReport(The reporter type from above) '{Same User params as above minus 'reporterType'}'`
+ 
+ ### Example
+ If your using the in built checkers you can run: (replace "ADMINGROUPNAME" with your group name)
+ `python3 cli.py policychecker '{"group":"ADMINGROUPNAME"}'`
+ 
+ 
