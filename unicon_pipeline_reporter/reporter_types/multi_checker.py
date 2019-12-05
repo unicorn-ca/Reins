@@ -34,12 +34,6 @@ class MultiCheckerReporter(Reporter):
                 )
                 errors = []
                 for event in events:
-                    print("Time: {4} EventSource: {0} EventName: {1} EventType: {2} UserName: {3}".format(event.event_source,
-                                                                                  event.event_name,
-                                                                                  event.event_type,
-                                                                                  event.username,
-                                                                                  event.event_time)
-                          )
                     if isinstance(event, Event):
                         if isinstance(event.identity, IAMRoot):
                             errors.append({'message': 'IAM Root Was Active', 'event': event})
@@ -105,6 +99,7 @@ class MultiCheckerReporter(Reporter):
                                                                                            error['event'].event_name,
                                                                                            error['event'].username)
                     raise Exception(error_message)
+                print("PASSED")
                 self.accept()
                 return
 
@@ -120,3 +115,9 @@ class MultiCheckerReporter(Reporter):
 
 
 
+ # print("Time: {4} EventSource: {0} EventName: {1} EventType: {2} UserName: {3}".format(event.event_source,
+ #                                                                                  event.event_name,
+ #                                                                                  event.event_type,
+ #                                                                                  event.username,
+ #                                                                                  event.event_time)
+ #                          )

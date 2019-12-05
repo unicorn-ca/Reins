@@ -12,6 +12,8 @@ class PolicyCheckerReporter(Reporter):
         try:
             if self.event.get_params() is not {}:
                 param = self.event.get_params()
+                if 'group' not in param:
+                    raise Exception("PolicyChecker Needs A Master 'Group'")
                 policy_group_name = param['group']
                 policy_group = IAMGroup(policy_group_name)
                 users = IAMUser.get_all_users()

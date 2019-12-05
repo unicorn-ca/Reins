@@ -22,6 +22,7 @@ The required role permissions for each reporter type
 | all | codepipeline.put_job_success_result <br>codepipeline.put_job_failure_result <br> iam.get_user<br>iam.get_group<br>iam.get_role|
 | codecommit | cloudtrail.lookup_events |
 | policychecker | iam.get_policy<br>iam.get_policy_version<br>iam.list_attached_user_policies<br>iam.list_attached_group_policies<br>iam.list_attached_role_policies |
+SNS Notification | SNS.publish
 
 ## Installation
 
