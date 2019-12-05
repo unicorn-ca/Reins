@@ -1,6 +1,6 @@
 # Unicorn Reporter (Reins)
 ## Overview
-- A framework for **AWS Lambda** function that's designed to be injected into stages of a **AWS CodePipeline** or stand-alone libary:
+- A framework for **AWS Lambda** function that's designed to be injected into stages of a **AWS CodePipeline** or as stand-alone libary:
 - Example Reporters (Can Be Seen in `/unicon_pipeline_reporter/reporter_types`)
 	- PolicyChecks
 		-  Check for any overly permissive user/role accounts
