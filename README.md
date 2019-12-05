@@ -1,4 +1,7 @@
 # Reins (Account/Pipeline Auditor)
+
+![Reins-Logo](reins-logo.png)
+
 ## Overview
 - A framework for **AWS Lambda** function that's designed to be injected into stages of a **AWS CodePipeline** or as stand-alone libary:
 - Example Reporters (Can Be Seen in `/unicon_pipeline_reporter/reporter_types`)
